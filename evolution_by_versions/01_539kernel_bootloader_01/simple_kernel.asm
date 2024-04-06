@@ -1,6 +1,7 @@
 start:
-    mov     ax, cs
-    mov     ds, ax
+    mov     ax, cs                      
+    mov     ds, ax                      ; ds:si is the memory address where loadb instruction loads data.
+                                        ; set ds segment same as cs segment (flat model). This asm unit should be used by jmp, which can set cs segment 
 
     ; missing parts of kernel
 
@@ -14,7 +15,7 @@ print_string:
     ; subsequent instructions will be executed sequentially
 
 print_char:
-    lodsb                               ; load a byte (character) from memory addressed by si, and store it in al register, which will be printed by 10h:0Eh service
+    lodsb                               ; load a byte (character) from memory addressed by ds:si, and store it in al register, which will be printed by 10h:0Eh service
 
     cmp     al, 0h                       ; C-null termination mechanism
     je      done

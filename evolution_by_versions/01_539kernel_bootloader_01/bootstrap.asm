@@ -1,6 +1,6 @@
 start:
-    mov     ax, 07C0h
-    mov     ds, ax
+    mov     ax, 07C0h                   
+    mov     ds, ax                      ; ds:si is the memory address where loadb instruction loads data 
 
     mov     si, title_string
     call    print_string
@@ -13,7 +13,7 @@ start:
 
 load_kernel_from_disk:
     mov     ax, 0900h
-    mov     es, ax                      ; es: the base memory address
+    mov     es, ax                      ; es:bx is the memory address which service 13h:02h writes content read from disk into
 
     mov     ah, 02h                     ; read service
     mov     al, 01h                     ; number of sectors to read
@@ -21,7 +21,7 @@ load_kernel_from_disk:
     mov     cl, 02h                     ; starting sector number to read
     mov     dh, 0h                      ; header number
     mov     dl, 80h                     ; type of disk to read from (00h means floppy disk, 80h means hard disk #0, 81h means hard disk #1)
-    mov     bx, 0h                      ; memory address (actually the offset address, not exactly physical address) the content will be written into
+    mov     bx, 0h                      ; offset address the kernel will be written into
     int     13h                         ; disk related services
 
     jc      kernel_load_error           ; jump to kernel_load_error if carriy flag is 1, which is setted after int instruction failed      
@@ -39,7 +39,7 @@ print_string:
     ; subsequent instructions will be executed sequentially
 
 print_char:
-    lodsb                               ; load a byte (character) from memory addressed by si, and store it in al register, which will be printed by 10h:0Eh service
+    lodsb                               ; load a byte (character) from memory addressed by ds:si, and store it in al register, which will be printed by 10h:0Eh service
 
     cmp     al, 0h                       ; C-null termination mechanism
     je      printing_finished
