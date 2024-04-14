@@ -1,5 +1,5 @@
 start:
-    mov     ax, 07C0h                   
+    mov     ax, 07C0h                   ; 07C0h is the address where firmware will load bootloader into. This address is used as base address for loading data and jumping instruction of bootloader               
     mov     ds, ax                      ; ds:si is the memory address where loadb instruction loads data 
 
     mov     si, title_string
