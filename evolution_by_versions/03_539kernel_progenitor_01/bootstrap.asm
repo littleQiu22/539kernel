@@ -10,7 +10,7 @@ load_kernel_from_disk:
     mul bx
     mov bx, ax
 
-    ; determine base address 
+    ; determine base address of kernel
     mov ax, 0900h
     mov es, ax
 
