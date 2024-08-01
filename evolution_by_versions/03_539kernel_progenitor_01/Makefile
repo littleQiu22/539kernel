@@ -7,15 +7,15 @@ KERNEL_FLAGS = -Wall -m32 -c -ffreestanding -fno-asynchronous-unwind-tables -fno
 KERNEL_OBJECT = -o kernel.elf
 
 build: $(BOOTSTRAP_FILE) $(INIT_KERNEL_FILES) $(KERNEL_FILES)
-	$(ASM) -f bin $(BOOTSTRAP_FILE) -o bootstrap.o
-	$(ASM) -f elf32 $(INIT_KERNEL_FILES) -o starter.o
-	$(CC) $(KERNEL_FLAGS) $(KERNEL_FILES) $(KERNEL_OBJECT)
+	$(ASM) -f bin $(BOOTSTRAP_FILE) -o bootstrap.o						# no need for linking, just compile to binary file
+	$(ASM) -f elf32 $(INIT_KERNEL_FILES) -o starter.o					# need later linking, to elf format file
+	$(CC) $(KERNEL_FLAGS) $(KERNEL_FILES) $(KERNEL_OBJECT)				# need later linking, to elf format file
 
-	ld -melf_i386 -Tlinker.ld starter.o kernel.elf -o 539kernel.elf
-	objcopy -O binary 539kernel.elf 539kernel.bin
-	dd if=bootstrap.o of=kernel.img
-	dd seek=1 conv=sync if=539kernel.bin of=kernel.img bs=512 count=5
-	dd seek=6 conv=sync if=/dev/zero of=kernel.img bs=512 count=2046
+	ld -melf_i386 -Tlinker.ld starter.o kernel.elf -o 539kernel.elf		# link starter and kernel using linker.ld layout script
+	objcopy -O binary 539kernel.elf 539kernel.bin						# convert elf format to kernel binary file
+	dd if=bootstrap.o of=kernel.img										# pick bootstrap binary file to final image
+	dd seek=1 conv=sync if=539kernel.bin of=kernel.img bs=512 count=5	# pick kernel binary file to final image (start from 1 * 512 bytes, size is 5 * 512 bytes)
+	dd seek=6 conv=sync if=/dev/zero of=kernel.img bs=512 count=2046	# pad image with zero
 
 	qemu-system-x86_64 -s kernel.img
 	
