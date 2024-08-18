@@ -1,7 +1,7 @@
 SECTIONS
 {
     /* text section's initial address: 0x09000 */
-    .text 0x09000:
+    .text 0x09000 :
     {
         /* denote code, _code, __code as the start address of this section */
         code = .; _code = .; __code = .;
@@ -9,14 +9,14 @@ SECTIONS
         *(.text)
     }
 
-    .data:
+    .data :
     {
         data = .; _data = .; __data = .;
         *(.data)
         *(.rodata)
     }
 
-    .bss:
+    .bss :
     {
         bss = .; _bss = .; __bss = .;
         *(.bss)

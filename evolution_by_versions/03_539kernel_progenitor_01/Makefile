@@ -3,7 +3,7 @@ CC = gcc
 BOOTSTRAP_FILE = bootstrap.asm
 INIT_KERNEL_FILES = starter.asm
 KERNEL_FILES = main.c
-KERNEL_FLAGS = -Wall -m32 -c -ffreestanding -fno-asynchronous-unwind-tables -fno-pie
+KERNEL_FLAGS = -Wall -m32 -c -ffreestanding -fno-asynchronous-unwind-tables -fno-pie -fno-stack-protector
 KERNEL_OBJECT = -o kernel.elf
 
 build: $(BOOTSTRAP_FILE) $(INIT_KERNEL_FILES) $(KERNEL_FILES)

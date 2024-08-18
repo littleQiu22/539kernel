@@ -1,4 +1,4 @@
-volatile unsigned char *video = 0xB8000;
+volatile unsigned char *video = (volatile unsigned char *)0xB8000;
 
 int nextTextPos = 0;
 int curLine = 0;
@@ -55,7 +55,7 @@ void printi(int number)
     // base condition
     if(number >=0 && number <=9)
     {
-        printi(digitToStr[number]);
+        print(digitToStr[number]);
         return;
     }
     else
