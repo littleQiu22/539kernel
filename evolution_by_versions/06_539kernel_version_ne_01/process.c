@@ -1,6 +1,7 @@
 #include "process.h"
 
-process_t *processes[ 15 ];
+process_t *processes[15];
+
 int processes_count, curr_pid;
 
 void process_init()
@@ -9,10 +10,9 @@ void process_init()
     curr_pid = 0;
 }
 
-process_t *process_create( int *base_address )
+process_t* process_create(int *base_address)
 {
-	process_t *process = kalloc( sizeof( process_t ) );
-	
+    process_t *process = kalloc(sizeof(process_t));
     process->pid = curr_pid++;
     
     process->context.eax = 0;
@@ -24,11 +24,12 @@ process_t *process_create( int *base_address )
     process->context.esi = 0;
     process->context.edi = 0;
     process->context.eip = base_address;
-    
+
     process->state = READY;
     process->base_address = base_address;
-    
-    processes[ process->pid ] = process;
+
+    processes[process->pid] = process;
     
     processes_count++;
+    return process;
 }

@@ -4,7 +4,7 @@ BOOTSTRAP_FILE = bootstrap.asm
 SIMPLE_KERNEL = simple_kernel.asm
 INIT_KERNEL_FILES = starter.asm
 KERNEL_FILES = main.c
-KERNEL_FLAGS = -Wall -m32 -c -ffreestanding -fno-asynchronous-unwind-tables -fno-pie
+KERNEL_FLAGS = -Wall -m32 -c -ffreestanding -fno-asynchronous-unwind-tables -fno-pie -fno-stack-protector
 KERNEL_OBJECT = -o kernel.elf
 
 build: $(BOOTSTRAP_FILE) $(KERNEL_FILE)
@@ -24,5 +24,5 @@ build: $(BOOTSTRAP_FILE) $(KERNEL_FILE)
 	dd if=bootstrap.o of=kernel.img
 	dd seek=1 conv=sync if=539kernel.bin of=kernel.img bs=512 count=20
 	dd seek=21 conv=sync if=/dev/zero of=kernel.img bs=512 count=2046
-	bochs -f bochs
+	bochs -f bochs.conf
 	#qemu-system-x86_64 -machine pc kernel.img

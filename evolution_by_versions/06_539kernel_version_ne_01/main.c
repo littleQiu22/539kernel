@@ -1,19 +1,18 @@
+#include "screen.h"
+#include "scheduler.h"
 
 void processA();
 void processB();
 void processC();
 void processD();
 
-void print_fs();
-
 void kernel_main()
 {
-	heap_init();
-	paging_init();
+    heap_init();
+    paging_init();
 	screen_init();
 	process_init();
 	scheduler_init();
-	filesystem_init();
 	
 	print( "Welcome to 539kernel!" );
 	println();
@@ -22,12 +21,12 @@ void kernel_main()
 	printi( 539 );
 	println();
 	
-    process_create( &processA );
-	process_create( &processB );
-	process_create( &processC );
-	process_create( &processD );
-	
-	// ... //
+    process_create( &processA);
+    process_create( &processB);
+    process_create( &processC);
+    process_create( &processD);
+
+    // ... //
 	
 	char *data = kalloc( 512 );
 	strcpy( data, "The content of the first file on 539filesystem" );	
@@ -62,26 +61,12 @@ void kernel_main()
 	while( 1 );
 }
 
-void print_fs()
-{
-	char **files = list_files();
-
-	for ( int currIdx = 0; currIdx < get_files_number(); currIdx++ )
-	{
-		print( "File: " );
-		print( files[ currIdx ] );
-		println();
-	}
-	
-	print( "==" );
-	println();
-}
 
 void interrupt_handler( int interrupt_number )
 {
-	//println();
-	//print( "Interrupt Received " );
-	//printi( interrupt_number );
+	println();
+	print( "Interrupt Received " );
+	printi( interrupt_number );
 }
 
 void processA()
@@ -91,6 +76,7 @@ void processA()
     while ( 1 )
         asm( "mov $5390, %eax" );
 }
+
 
 void processB()
 {

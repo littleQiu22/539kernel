@@ -11,6 +11,9 @@ extern run_next_process
 extern page_directory
 global load_page_directory
 global enable_paging
+global dev_write
+global dev_write_word
+global dev_read
 
 start:
     ; copy code segment value to data segment value
@@ -113,6 +116,69 @@ enable_paging:
 	mov eax, cr0
 	or eax, 80000000h
 	mov cr0, eax
+	ret
+
+; void dev_write(int port, int cmd)
+dev_write:
+	; copy registers first and to restore them later
+	push edx
+	push eax
+
+	; clear register to zero
+	xor edx, edx
+	xor eax, eax
+
+	; copy <port> to dx
+	; copy <cmd> to al
+	mov dx, [esp+12]
+	mov al, [esp+16]
+
+	out dx, al
+
+	; restore influenced registers
+	pop eax
+	pop edx
+
+	ret
+
+; void dev_write_word(int port, short w)
+dev_write_word:
+	; copy registers first and to restore them later
+	push edx
+	push eax
+
+	; clear register to zero
+	xor edx, edx
+	xor eax, eax
+
+	; copy <port> to dx
+	; copy <word> to ax
+	mov dx, [esp+12]
+	mov ax, [esp+16]
+
+	out dx, ax
+
+	; restore influenced registers
+	pop eax
+	pop edx
+
+	ret
+
+; short dev_read( int port )
+dev_read:
+	push edx
+	
+	xor edx, edx
+	xor eax, eax
+
+	mov dx, [esp + 8]
+
+	; eax register should be changed as this function's return value
+	; so no need to restore eax register
+	in ax, dx
+
+	pop edx
+
 	ret
 
 start_kernel:

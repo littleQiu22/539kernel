@@ -15,11 +15,13 @@ build: $(BOOTSTRAP_FILE) $(INIT_KERNEL_FILES) $(KERNEL_FILES)
 	$(CC) $(KERNEL_FLAGS) scheduler.c -o scheduler.elf
 	$(CC) $(KERNEL_FLAGS) heap.c -o heap.elf
 	$(CC) $(KERNEL_FLAGS) paging.c -o paging.elf
-	ld -melf_i386 -Tlinker.ld starter.o kernel.elf screen.elf process.elf scheduler.elf heap.elf paging.elf -o 539kernel.elf		# link routines and kernel using linker.ld layout script
+	$(CC) $(KERNEL_FLAGS) ata.c -o ata.elf
+	$(CC) $(KERNEL_FLAGS) str.c -o str.elf
+	$(CC) $(KERNEL_FLAGS) filesystem.c -o filesystem.elf
+	ld -melf_i386 -Tlinker.ld starter.o kernel.elf screen.elf process.elf scheduler.elf heap.elf paging.elf ata.elf str.elf filesystem.elf -o 539kernel.elf		# link routines and kernel using linker.ld layout script
 	objcopy -O binary 539kernel.elf 539kernel.bin						# convert elf format to kernel binary file
 	dd if=bootstrap.o of=kernel.img										# pick bootstrap binary file to final image
-	dd seek=1 conv=sync if=539kernel.bin of=kernel.img bs=512 count=8	# pick kernel binary file to final image (start from 1 * 512 bytes, size is 5 * 512 bytes)
-	dd seek=9 conv=sync if=/dev/zero of=kernel.img bs=512 count=2046	# pad image with zero
-	qemu-system-x86_64 -s kernel.img
-
+	dd seek=1 conv=sync if=539kernel.bin of=kernel.img bs=512 count=20	# pick kernel binary file to final image (start from 1 * 512 bytes, size is 5 * 512 bytes)
+	dd seek=21 conv=sync if=/dev/zero of=kernel.img bs=512 count=2046	# pad image with zero
+	bochs -f bochs.conf
 	
